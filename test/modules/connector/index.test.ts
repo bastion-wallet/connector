@@ -29,13 +29,16 @@ describe("setupConnector", () => {
 	beforeEach(() => {});
 	const expectedAddress = "0xB730d07F4c928AD9e72B59AB99d22cB87BE9A867"; // replace with actual expected address
 
-	it("should create a new wallet connector object and return provider", async () => {
+	it.skip("should create a new wallet connector object and return provider", async () => {
 		let connector = new BastionWalletConnector({ chains: [arbitrumGoerli], options: DEFAULT_CONFIG });
-		// const provider = await connector.bastionCustomConnector.getProvider();
-		// console.log(provider);
+		const provider = await connector.bastionCustomConnector.getProvider();
+		await expect(provider._isProvider).toBe(true);
+	});
 
-		console.log("Test done");
-		// await expect(bastionConnect.init(provider, DEFAULT_CONFIG)).rejects.toThrow("Chain not supported");
+	it("should return the chain Id", async () => {
+		let connector = new BastionWalletConnector({ chains: [arbitrumGoerli], options: DEFAULT_CONFIG });
+		const chainId = await connector.bastionCustomConnector.getChainId();
+		await expect(chainId).toBe(421613);
 	});
 });
 

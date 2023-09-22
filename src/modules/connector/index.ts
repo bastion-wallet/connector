@@ -1,4 +1,4 @@
-import { Connector, Chain } from "wagmi";
+import { Connector, Chain, ConnectorData } from "wagmi";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { ethers } from "ethers";
 import { Bastion } from "bastion-wallet-sdk";
@@ -29,62 +29,57 @@ export class BastionCustomConnector extends Connector {
 	}
 
 	async getProvider() {
-		throw new Error("Method not implemented.");
-		// return new ethers.providers.JsonRpcProvider(this.signerOptions.rpcUrl);
+		return new ethers.providers.JsonRpcProvider(this.signerOptions.rpcUrl);
 	}
 
-	// async connect({ chainId }: { chainId?: number } = {}): Promise<Required<ConnectorData>> {
-	async connect({ chainId }: { chainId?: number } = {}): Promise<any> {
-		throw new Error("Method not implemented.");
-		// let account = "";
-		// const bastion = new Bastion();
-		// const bastionConnect = await bastion.bastionConnect;
-		// if (this.signerOptions.provider) {
-		// 	//   await bastionConnect.connect(this.provider);
-		// 	await bastionConnect.init(this.signerOptions.provider, {
-		// 		chainId: this.signerOptions.chainId,
-		// 		apiKey: this.signerOptions.apiKey,
-		// 	});
-		// 	account = await bastionConnect.getAddress();
-		// 	this.bastionConnect = bastionConnect;
-		// }
-		// return {
-		// 	account: account as `0x${string}`,
-		// 	chain: {
-		// 		id: 80001,
-		// 		unsupported: false,
-		// 	},
-		// };
-	}
-	//   async connect() {
-	//     const bastion = new Bastion();
-	//     const bastionConnect = await bastion.bastionConnect;
-	//     if (this.provider) {
-	//       bastionConnect.connect(this.provider);
-	//     }
-	//     return;
-	//   }
+	async connect({ chainId }: { chainId?: number } = {}): Promise<Required<ConnectorData>> {
+		let account = "";
+		const bastion = new Bastion();
+		const bastionConnect = await bastion.bastionConnect;
+		const provider = await this.getProvider();
 
-	// Implement other methods
-	// connect, disconnect, getAccount, etc.
+		await bastionConnect.init(provider, {
+			chainId: this.signerOptions.chainId,
+			apiKey: this.signerOptions.apiKey,
+		});
+		account = await bastionConnect.getAddress();
+		this.bastionConnect = bastionConnect;
+
+		return {
+			account: account as `0x${string}`,
+			chain: {
+				id: this.signerOptions.chainId,
+				unsupported: false,
+			},
+		};
+	}
 
 	async disconnect() {}
 
 	async getAccount() {
-		const account = await this.bastionConnect.getAccount();
+		const account = await this.bastionConnect.getAddress();
 		return account;
 	}
 
-	getChainId(): Promise<number> {
-		throw new Error("Method not implemented.");
+	async getChainId(): Promise<number> {
+		const provider = await this.getProvider();
+		const network = await provider.getNetwork();
+		const chainId = network.chainId;
+
+		console.log("Chain ID:", chainId);
+		return chainId;
 	}
 
 	getWalletClient(): any {
 		throw new Error("Method not implemented.");
 	}
-	isAuthorized(): Promise<boolean> {
-		return this.bastionConnect.isAuthorized;
-		// throw new Error("Method not implemented.");
+	async isAuthorized(): Promise<boolean> {
+		try {
+			const account = await this.bastionConnect.getAddress();
+			return !!account;
+		} catch {
+			return false;
+		}
 	}
 	protected onAccountsChanged(accounts: `0x${string}`[]): void {
 		throw new Error("Method not implemented.");

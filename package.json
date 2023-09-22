@@ -1,7 +1,7 @@
 {
-	"name": "bastion-wallet-sdk",
-	"version": "0.1.0-public-alpha.7",
-	"description": "Bastion SDK: A modular, open-source TypeScript SDK for seamless integration of multi-chain wallet functionality. Simplify decentralized app development with unified accounts, built-in multi-signature support, and more. ERC4337-compatible.",
+	"name": "bastion-wallet-connector",
+	"version": "0.1.0",
+	"description": "Bastion Wagmi Connector",
 	"main": "dist/bastion-wallet.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
@@ -15,14 +15,14 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/bastion-wallet/sdk"
+		"url": "git+https://github.com/bastion-wallet/connector"
 	},
 	"author": "Gaurang Torvekar | Indorse",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/bastion-wallet/sdk/issues"
+		"url": "https://github.com/bastion-wallet/connector/issues"
 	},
-	"homepage": "https://github.com/bastion-wallet/sdk#readme",
+	"homepage": "https://github.com/bastion-wallet/connector#readme",
 	"devDependencies": {
 		"@babel/core": "^7.22.10",
 		"@babel/preset-env": "^7.22.10",
@@ -49,3 +49,4 @@
 		"wagmi": "^1.4.2"
 	}
 }
+
