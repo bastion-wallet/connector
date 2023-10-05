@@ -38,7 +38,9 @@ describe("setupConnector", () => {
 	it("should return the chain Id", async () => {
 		let connector = new BastionWalletConnector({ chains: [arbitrumGoerli], options: DEFAULT_CONFIG });
 		const chainId = await connector.bastionCustomConnector.getChainId();
+		const res = await connector.bastionCustomConnector.connect({chainId});
+		console.log("res",res)
 		await expect(chainId).toBe(421613);
-	});
+	}, 70000);
 });
 

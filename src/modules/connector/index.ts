@@ -37,11 +37,7 @@ export class BastionCustomConnector extends Connector {
 		const bastion = new Bastion();
 		const bastionConnect = await bastion.bastionConnect;
 		const provider = await this.getProvider();
-
-		await bastionConnect.init(provider, {
-			chainId: this.signerOptions.chainId,
-			apiKey: this.signerOptions.apiKey,
-		});
+		await bastionConnect.init(provider,this.signerOptions);
 		account = await bastionConnect.getAddress();
 		this.bastionConnect = bastionConnect;
 
