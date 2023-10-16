@@ -1,4 +1,4 @@
-import { BastionCustomConnector, BastionSignerOptions } from "./modules/connector";
+import { BastionCustomConnector, BastionSignerOptions } from "./bastionWallet";
 import { Connector, Chain, ConnectorData } from "wagmi";
 
 export class BastionWalletConnector {

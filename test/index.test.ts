@@ -1,18 +1,18 @@
 import { ethers, Contract } from "ethers";
-import { BastionSignerOptions } from "../../../src/modules/connector";
+import { BastionOptions } from "../src/bastionWallet";
 import { arbitrumGoerli } from "viem/chains";
-import { BastionWalletConnector } from "../../../src/index";
+import { BastionCustomConnector } from "../src/bastionWallet";
 import { describe, beforeEach, it, expect } from "@jest/globals";
 import { skip } from "node:test";
 
 let walletConnected;
 let provider;
 
-const DEFAULT_CONFIG: BastionSignerOptions = {
-	privateKey: process.env.PRIVATE_KEY || "",
+const DEFAULT_CONFIG: BastionOptions = {
+	privateKey: process.env.PRIVATE_KEY as `0x${string}` || "",
 	// rpcUrl: process.env.RPC_URL1 || "", //mumbai
 	// chainId: 80001,
-	rpcUrl: process.env.RPC_URL2 || "", // arb-goerli
+	rpcUrl: process.env.RPC_URL_ARB_GOERLI || "", // arb-goerli
 	chainId: 421613,
 	// rpcUrl: process.env.RPC_URL3 || "", // scroll
 	// chainId: 534353,
@@ -29,18 +29,20 @@ describe("setupConnector", () => {
 	beforeEach(() => {});
 	const expectedAddress = "0xB730d07F4c928AD9e72B59AB99d22cB87BE9A867"; // replace with actual expected address
 
-	it.skip("should create a new wallet connector object and return provider", async () => {
-		let connector = new BastionWalletConnector({ chains: [arbitrumGoerli], options: DEFAULT_CONFIG });
-		const provider = await connector.bastionCustomConnector.getProvider();
-		await expect(provider._isProvider).toBe(true);
+	it("should create a new wallet connector object and return provider", async () => {
+		let connector = new BastionCustomConnector({ chains: [arbitrumGoerli], options: DEFAULT_CONFIG });
+		const provider = await connector.getProvider();
+		expect(provider._isProvider).toBe(true);
 	});
 
 	it("should return the chain Id", async () => {
-		let connector = new BastionWalletConnector({ chains: [arbitrumGoerli], options: DEFAULT_CONFIG });
-		const chainId = await connector.bastionCustomConnector.getChainId();
-		const res = await connector.bastionCustomConnector.connect({chainId});
+		// let connector = new BastionWalletConnector({ chains: [arbitrumGoerli], options: DEFAULT_CONFIG });
+		let connector = new BastionCustomConnector({ chains: [arbitrumGoerli], options: DEFAULT_CONFIG });
+		const chainId = await connector.getChainId();
+		const res = await connector.connect({chainId});
 		console.log("res",res)
-		await expect(chainId).toBe(421613);
+
+		expect(res.chain.id).toBe(421613);
 	}, 70000);
 });
 
