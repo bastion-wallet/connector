@@ -3,7 +3,7 @@ import { JsonRpcProvider } from "@ethersproject/providers";
 import { ethers, providers } from "ethers";
 import { Bastion } from "../sdk/src/index";
 // import { Bastion } from "bastion-wallet-sdk";
-import { Hex, HttpTransport, PublicClient, createPublicClient, createWalletClient, custom, http } from "viem";
+import { Hex, HttpTransport, PublicClient, createPublicClient, createWalletClient, custom, http, Address } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
 export interface BastionOptions {
@@ -14,6 +14,15 @@ export interface BastionOptions {
 	gasToken?: string;
 	noSponsorship?: boolean;
 	provider?: any;
+}
+
+export type ConnectorDataExt ={
+	account?: Address;
+    chain?: {
+        id: number;
+        unsupported: boolean;
+    };
+	bastionSDK : any
 }
 
 export class BastionCustomConnector extends Connector {
@@ -69,25 +78,27 @@ export class BastionCustomConnector extends Connector {
 		// return new ethers.providers.JsonRpcProvider(this.signerOptions.rpcUrl);
 	}
 
-	async connect({ chainId }: { chainId?: number } = {}): Promise<Required<ConnectorData>> {
+	async connect({ chainId }: { chainId?: number } = {}): Promise<Required<ConnectorDataExt>> {
 		let account = "";
 		const bastion = new Bastion();
 		const bastionSDK = await bastion.viemConnect;
 		// const provider = await this.getProvider();
 		await bastionSDK.init(
-			this.publicClient,
-			this.walletClient,
+			this.publicClient as any,
+			this.walletClient as any,
 			this.signerOptions
 		);
 		account = await bastionSDK.getAddress();
 		this.bastionSDK = bastionSDK;
-
+		
 		return {
 			account: account as `0x${string}`,
 			chain: {
 				id: this.signerOptions.chainId,
 				unsupported: false,
 			},
+			//@ts-ignore
+			bastionSDk : this.bastionSDK
 		};
 	}
 
@@ -107,7 +118,24 @@ export class BastionCustomConnector extends Connector {
 		return chainId;
 	}
 
-	getWalletClient(): any {
+	async getChain() {
+        const chainId = await this.getChainId()
+        const chain = this.chains.find(chain => chain.id === chainId)
+        if (!chain) throw new Error(`Please add ${chainId} to chains`)
+        return chain
+    }
+
+	async getWalletClient(): Promise<any> {
+		let provider = await this.getProvider()
+		if(!this.walletClient){
+			if (!provider) throw new Error('provider is required')
+			this.walletClient = createWalletClient({
+                account: await this.getAccount(),
+                chain: await this.getChain(),
+                transport: custom(provider as any)
+            })
+		}
+		this.walletClient.writeContract = this.bastionSDK.writeContract()
 		return this.walletClient;
 	}
 
