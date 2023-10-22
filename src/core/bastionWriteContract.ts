@@ -21,21 +21,23 @@ export type WriteContract = {
   abi: any,
   functionName : string,
   args? : any,
+  value?:string
   bastion? : any
 }
 
 
-export async function writeToContract(data : WriteContract) {
+export async function bastionWriteContract(data : WriteContract) {
     try{
-        const {account, contractAddress, abi, functionName, bastion} = data;
-        const address = bastion.getAddress()
-    
+        const {account, contractAddress, abi, functionName, args, value, bastion} = data;
+        const address = await bastion.getAddress()
+        console.log("address", address);
         const { request } = await bastion.publicClient.simulateContract({
                 account,
                 address: contractAddress,
                 abi: abi,
-                functionName: 'safeMint',
-                args: [address]
+                functionName,
+                value: value || "0",
+                args: args
             })
     
         const hash = await bastion.writeContract(request)
