@@ -1,7 +1,7 @@
 import { Hash } from '@wagmi/core'
 
 
-export type writeContracts = {
+export type writeRequest = {
     contractAddress: string,
     abi: any,
     functionName : string,
@@ -11,17 +11,17 @@ export type writeContracts = {
 
 export type WriteContractBatch = {
   account : Hash,
-  writeContracts : [writeContracts]
+  writeRequests : writeRequest[]
   bastion? : any
 }
 
 
 export async function bastionWriteContractBatch(data : WriteContractBatch) {
     try{
-        const {account, writeContracts, bastion} = data;
+        const {account, writeRequests, bastion} = data;
         const requests = [];
 
-        for(let eachContract of writeContracts){
+        for(let eachContract of writeRequests){
             const {contractAddress, abi, functionName, value, args} =  eachContract
             const { request } = await bastion.publicClient.simulateContract({
                 account,

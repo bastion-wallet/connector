@@ -2,7 +2,7 @@ import { useMutation } from 'wagmi';
 import { bastionWriteContractBatch } from '../core/bastionWriteContractBatch';
 import { Hash } from 'viem';
 
-export type writeContracts = {
+export type writeRequest = {
     contractAddress: string,
     abi: any,
     functionName : string,
@@ -12,7 +12,7 @@ export type writeContracts = {
 
 export type WriteContractBatch = {
     account : Hash,
-    writeContracts : [writeContracts]
+    writeRequests:writeRequest[],
     bastion? : any
 }
   
@@ -20,13 +20,13 @@ export type WriteContractBatch = {
 export const useBastionContractWriteBatch = () => {
   const mutationFn = ({
     account,
-    writeContracts : [writeContracts],
+    writeRequests,
     bastion
   }: any) => {
-
+    console.log("writes", writeRequests)
     const WriteContractBatch : WriteContractBatch = {
         account, 
-        writeContracts : [writeContracts], 
+        writeRequests, 
         bastion
     }
   
