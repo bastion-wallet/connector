@@ -1,18 +1,4 @@
-import { ConnectorNotFoundError, Hash, getWalletClient } from '@wagmi/core'
-import { Bastion } from "../../sdk/src/index";
-import {createPublicClient, createWalletClient, http} from 'viem'
-import {polygonMumbai, arbitrumGoerli,scrollTestnet, lineaTestnet, baseGoerli, optimismGoerli} from 'viem/chains'
-import { privateKeyToAccount } from 'viem/accounts'
-
-export interface BastionViemOptions {
-	privateKey?: String;
-	rpcUrl?: string;
-	chainId?: number;
-	apiKey: string;
-	gasToken?: string;
-	noSponsorship?: boolean;
-	provider?: any;
-}
+import {Hash} from '@wagmi/core'
 
 
 export type WriteContract = {
@@ -29,8 +15,6 @@ export type WriteContract = {
 export async function bastionWriteContract(data : WriteContract) {
     try{
         const {account, contractAddress, abi, functionName, args, value, bastion} = data;
-        const address = await bastion.getAddress()
-        console.log("address", address);
         const { request } = await bastion.publicClient.simulateContract({
                 account,
                 address: contractAddress,
