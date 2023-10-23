@@ -41,12 +41,12 @@
 	},
 	"dependencies": {
 		"@account-abstraction/contracts": "^0.6.0",
+		"@alchemy/aa-core": "^0.1.0",
 		"@ethersproject/providers": "^5.7.2",
 		"axios": "^1.4.0",
-		"bastion-wallet-sdk": "^0.1.0-public-alpha.10",
+		"bastion-wallet-sdk": "^0.1.0-public-alpha.11",
 		"ethers": "^5.7.2",
 		"viem": "^1.10.14",
 		"wagmi": "^1.4.2"
 	}
 }
-
