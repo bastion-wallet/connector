@@ -1,8 +1,6 @@
-import { Connector, Chain, ConnectorData, WalletClient } from "wagmi";
-import { JsonRpcProvider } from "@ethersproject/providers";
-import { ethers, providers } from "ethers";
-import { Bastion } from "../sdk/src/index";
-// import { Bastion } from "bastion-wallet-sdk";
+import { Connector, Chain, WalletClient } from "wagmi";
+import { providers } from "ethers";
+import { Bastion } from "bastion-wallet-sdk";
 import { Hex, HttpTransport, PublicClient, createPublicClient, createWalletClient, custom, http, Address } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
@@ -34,7 +32,6 @@ export class BastionCustomConnector extends Connector {
 	publicClient: PublicClient;
 	walletClient: WalletClient;
 
-	// constructor(config: { chains?: Chain[]; options: BastionOptions }) {
 	constructor(config: any) {
 		console.log("BastionCustomConnector constructor");
 		super(config);
