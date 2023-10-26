@@ -1,15 +1,16 @@
-import { ethers, Contract } from "ethers";
 import { BastionOptions } from "../src/bastionWallet";
 import { arbitrumGoerli } from "viem/chains";
 import { BastionCustomConnector } from "../src/bastionWallet";
 import { describe, beforeEach, it, expect } from "@jest/globals";
 import { skip } from "node:test";
+import {abi} from "./abi"  ;
 
+import {BastionWalletConnector} from "../src/index"
 let walletConnected;
 let provider;
 
 const DEFAULT_CONFIG: BastionOptions = {
-	privateKey: process.env.PRIVATE_KEY as `0x${string}` || "",
+	privateKey: process.env.PRIVATE_KEY as `0x${string}`,
 	// rpcUrl: process.env.RPC_URL1 || "", //mumbai
 	// chainId: 80001,
 	rpcUrl: process.env.RPC_URL_ARB_GOERLI || "", // arb-goerli
@@ -34,7 +35,6 @@ describe("setupConnector", () => {
 		const provider = await connector.getProvider();
 		expect(provider._isProvider).toBe(true);
 	});
-
 	it("should return the chain Id", async () => {
 		// let connector = new BastionWalletConnector({ chains: [arbitrumGoerli], options: DEFAULT_CONFIG });
 		let connector = new BastionCustomConnector({ chains: [arbitrumGoerli], options: DEFAULT_CONFIG });
@@ -44,5 +44,31 @@ describe("setupConnector", () => {
 
 		expect(res.chain.id).toBe(421613);
 	}, 70000);
+
+	it("should return connector data", async() => {
+		let connector = new BastionCustomConnector({ chains : [arbitrumGoerli], options: DEFAULT_CONFIG });
+		const chainId = await connector.getChainId();
+		const res = await connector.connect({chainId});
+		console.log(res)
+		expect(res).toHaveProperty('bastion');
+		expect(res).toHaveProperty('account');
+		expect(res).toHaveProperty('chain');
+	})
+
+	it("should return walletClient", async() => {
+		let connector = new BastionCustomConnector({ chains : [arbitrumGoerli], options: DEFAULT_CONFIG });
+		const res =  await connector.getWalletClient()
+		console.log(res)
+	})
+
+	
+	it("should get the account address", async() =>{
+		let connector = new BastionCustomConnector({ chains : [arbitrumGoerli], options: DEFAULT_CONFIG });
+		const res = await connector.getAccount()
+
+		expect(res).toHaveLength(42);
+	})
+
+
 });
 
